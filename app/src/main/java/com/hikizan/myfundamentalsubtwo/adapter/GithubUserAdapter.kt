@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hikizan.myfundamentalsubtwo.databinding.ItemRowUserBinding
-import com.hikizan.myfundamentalsubtwo.model.GithubUser
+import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
 
-class GithubUserAdapter(private val listGithubUser: ArrayList<GithubUser>) :
+class GithubUserAdapter(private val listDetail: ArrayList<ResponseDetail>) :
     RecyclerView.Adapter<GithubUserAdapter.ViewHolder>() {
     class ViewHolder(var binding: ItemRowUserBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -17,18 +17,14 @@ class GithubUserAdapter(private val listGithubUser: ArrayList<GithubUser>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val (name, username, photo) = listGithubUser[position]
-
-        holder.binding.tvItemName.text = name
-        holder.binding.tvItemUsername.text = username
+        holder.binding.tvItemUsername.text = listDetail[position].login
+        holder.binding.tvItemName.text = listDetail[position].name
 
         Glide.with(holder.itemView.context)
-            .load(photo)
+            .load(listDetail[position].avatarUrl)
             .circleCrop()
             .into(holder.binding.imgItemPhoto)
     }
 
-    override fun getItemCount(): Int {
-        return listGithubUser.size
-    }
+    override fun getItemCount(): Int = listDetail.size
 }

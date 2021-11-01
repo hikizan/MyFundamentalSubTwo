@@ -5,19 +5,26 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hikizan.myfundamentalsubtwo.R
 import com.hikizan.myfundamentalsubtwo.adapter.GithubUserAdapter
+import com.hikizan.myfundamentalsubtwo.contract.UsersContract
 import com.hikizan.myfundamentalsubtwo.databinding.ActivityMainBinding
-import com.hikizan.myfundamentalsubtwo.model.ApiConfig
-import com.hikizan.myfundamentalsubtwo.model.GithubUser
+import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
+import com.hikizan.myfundamentalsubtwo.model.search.ResponseSearch
+import com.hikizan.myfundamentalsubtwo.model.users.ResponseUsers
+import com.hikizan.myfundamentalsubtwo.presenter.UsersPresenter
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UsersContract.usersView {
 
-    private val list = ArrayList<GithubUser>()
-    private lateinit var iSearch: SearchView
+    private lateinit var presenterUsers: UsersContract.usersPresenter
+    private val listDetail: ArrayList<ResponseDetail> = ArrayList<ResponseDetail>()
+    private var iSearch: SearchView? = null
+    private lateinit var adapter: GithubUserAdapter
 
     companion object{
         private const val TAG = "MainActivity"
@@ -30,13 +37,19 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initPresenter()
+
         iSearch = findViewById(R.id.i_search)
         supportActionBar?.title = "List Github User"
 
         binding.rvGithubUser.setHasFixedSize(true)
+        adapter = GithubUserAdapter(listDetail)
+        binding.rvGithubUser.layoutManager = LinearLayoutManager(this)
+        binding.rvGithubUser.adapter = adapter
+        adapter.notifyDataSetChanged()
 
-        //getListGithub()
-        showRecyclerList()
+        presenterUsers.getListUser()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,9 +62,13 @@ class MainActivity : AppCompatActivity() {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         searchView.queryHint = resources.getString(R.string.search_hint)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query: String): Boolean {
                 //mencari list user github
-                TODO("Not yet implemented")
+                if (query.isNotEmpty()){
+                    listDetail.clear()
+                    presenterUsers.getSearch(query)
+                }
+                return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -61,22 +78,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    /*
-    private fun getListGithub() {
-        showLoading(true)
-        val client = ApiConfig.getApiService().getListUser()
-    }
-     */
-
-
-
-    private fun showRecyclerList(){
-        val layoutManager = LinearLayoutManager(this)
-        binding.rvGithubUser.layoutManager = layoutManager
-        val listGithubAdapter = GithubUserAdapter(list)
-        binding.rvGithubUser.adapter = listGithubAdapter
+    private fun initPresenter() {
+        presenterUsers = UsersPresenter(this)
     }
 
+    private fun getReqDetail(login: String) {
+        presenterUsers.getDetailUser(login)
+    }
 
     private fun showLoading(isLoading: Boolean){
         if (isLoading){
@@ -84,5 +92,36 @@ class MainActivity : AppCompatActivity() {
         }else{
             binding.pbMain.visibility = View.INVISIBLE
         }
+    }
+
+    override fun _onSuccess(usersResponse: List<ResponseUsers?>?) {
+        for (user in usersResponse!!) {
+            getReqDetail(user!!.login)
+        }
+    }
+
+    override fun _onFailed(message: String?) {
+        Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun _onSuccessDetail(detailResponse: ResponseDetail?) {
+        listDetail.add(detailResponse!!)
+        adapter = GithubUserAdapter(listDetail)
+        binding.rvGithubUser.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun _onFailedDetail(message: String?) {
+        Toast.makeText(this, "Message: $message",Toast.LENGTH_SHORT).show()
+    }
+
+    override fun _onSuccessSearch(searchResponse: ResponseSearch?) {
+        for (item in searchResponse!!.items){
+            getReqDetail(item.login)
+        }
+    }
+
+    override fun _onFailedSearch(message: String?) {
+        Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
     }
 }

@@ -1,32 +1,34 @@
-package com.hikizan.myfundamentalsubtwo.model
+package com.hikizan.myfundamentalsubtwo.api
 
-import com.hikizan.myfundamentalsubtwo.model.response.ResponseDetailUser
-import com.hikizan.myfundamentalsubtwo.model.response.ResponseFollowersUser
-import com.hikizan.myfundamentalsubtwo.model.response.ResponseFollowingUser
-import com.hikizan.myfundamentalsubtwo.model.response.ResponseSearchListUser
+import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
+import com.hikizan.myfundamentalsubtwo.model.search.ResponseSearch
+import com.hikizan.myfundamentalsubtwo.model.users.ResponseUsers
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
 
+    //search
+    @Headers("Authorization: token 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")
+    @GET("search/users")
+    fun getSearchListUser(
+        @Query("q") username: String
+    ): Call<ResponseSearch>
+
     //listAll
     @Headers("Authorization: token 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")
     @GET("users")
-    fun getListUser()
-
-    //search
-    @Headers("Authorization: token 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")
-    @GET("search/user")
-    fun getSearchListUser(
-        @Path("q") q: String
-    ): Call<ResponseSearchListUser>
+    fun getListUser(): Call<List<ResponseUsers>>
 
     //detail user
     @Headers("Authorization: token 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")
-    @GET("users/{login}")
+    @GET("users/{username}")
     fun getDetailUser(
-        @Path("login") login: String
-    ): Call<ResponseDetailUser>
+        @Path("username") username: String
+    ): Call<ResponseDetail>
+
+
+    /*
 
     //follower
     @Headers("Authorization: token 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")
@@ -41,4 +43,6 @@ interface ApiService {
     fun getListFollowing(
         @Path("login") login: String
     ): Call<ResponseFollowingUser>
+
+     */
 }
