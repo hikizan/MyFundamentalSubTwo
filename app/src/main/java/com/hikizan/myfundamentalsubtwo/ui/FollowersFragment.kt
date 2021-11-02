@@ -27,7 +27,7 @@ class FollowersFragment : Fragment(), UsersContract.followersView {
         // Inflate the layout for this fragment
         binding = FragmentFollowersBinding.inflate(inflater,container,false)
         return binding.root
-        responseFollowers = activity.intent
+        
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
