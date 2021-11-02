@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         supportActionBar?.title = "List Github User"
 
         binding.rvGithubUser.setHasFixedSize(true)
+        /*
         adapter = GithubUserAdapter(listDetail)
         binding.rvGithubUser.layoutManager = LinearLayoutManager(this)
         binding.rvGithubUser.adapter = adapter
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
                 showSelectedGithubUser(data)
             }
         })
+         */
 
         presenterUsers.getListUser()
 
@@ -148,7 +150,6 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
     private fun showSelectedGithubUser(data: ResponseDetail) {
         val moveWithDataParcel = Intent(this@MainActivity, DetailActivity::class.java)
         moveWithDataParcel.putExtra(DetailActivity.EXTRA_DATA, data)
-
         startActivity(moveWithDataParcel)
     }
 

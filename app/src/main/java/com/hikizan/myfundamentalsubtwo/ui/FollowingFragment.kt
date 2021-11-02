@@ -1,60 +1,96 @@
 package com.hikizan.myfundamentalsubtwo.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.hikizan.myfundamentalsubtwo.R
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.hikizan.myfundamentalsubtwo.adapter.GithubUserAdapter
+import com.hikizan.myfundamentalsubtwo.contract.UsersContract
+import com.hikizan.myfundamentalsubtwo.databinding.FragmentFollowingBinding
+import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
+import com.hikizan.myfundamentalsubtwo.model.following.ResponseFollowing
+import com.hikizan.myfundamentalsubtwo.presenter.FollowingPresenter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class FollowingFragment : Fragment(), UsersContract.followingView {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FollowingFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FollowingFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var presenterFollowing: UsersContract.followingPresenter
+    private lateinit var binding: FragmentFollowingBinding
+    private val listDetail: ArrayList<ResponseDetail> = ArrayList<ResponseDetail>()
+    private lateinit var adapter: GithubUserAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_following, container, false)
+        binding = FragmentFollowingBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FollowingFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FollowingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initPresenter()
+
+        val responseDetail: ResponseDetail? =
+            requireActivity().intent.getParcelableExtra(DetailActivity.EXTRA_DATA)
+
+        presenterFollowing.getFollowing(responseDetail?.login)
     }
+
+    private fun initPresenter() {
+        showLoading(true)
+        presenterFollowing = FollowingPresenter(this)
+    }
+
+    private fun getReqDetail(login: String) {
+        presenterFollowing.getDetailUser(login)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.pbFollowing.visibility = View.VISIBLE
+        } else {
+            binding.pbFollowing.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun _onSuccessDetail(detailResponse: ResponseDetail?) {
+        listDetail.add(detailResponse!!)
+        adapter = GithubUserAdapter(listDetail)
+        binding.rvFollowing.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvFollowing.adapter = adapter
+        adapter.notifyDataSetChanged()
+        adapter.setOnItemClickCallback(object : GithubUserAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: ResponseDetail) {
+                showSelectedGithubUser(data)
+            }
+
+        })
+    }
+
+    private fun showSelectedGithubUser(data: ResponseDetail) {
+        val moveWithDataParcel = Intent(requireContext(), DetailActivity::class.java)
+        moveWithDataParcel.putExtra(DetailActivity.EXTRA_DATA, data)
+        startActivity(moveWithDataParcel)
+    }
+
+    override fun _onFailedDetail(message: String?) {
+        Toast.makeText(requireContext(), "Message: $message", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun _onSuccessFollowing(followingResponse: List<ResponseFollowing>?) {
+        for (following in followingResponse!!) {
+            following.login?.let { getReqDetail(it) }
+        }
+        showLoading(false)
+    }
+
+    override fun _onFailedFollowing(message: String?) {
+        Toast.makeText(requireContext(), "Message: $message", Toast.LENGTH_SHORT).show()
+    }
+
 }

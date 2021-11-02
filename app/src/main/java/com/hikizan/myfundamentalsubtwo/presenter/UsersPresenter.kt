@@ -85,28 +85,4 @@ class UsersPresenter : UsersContract.usersPresenter {
 
             })
     }
-/*
-    override fun getFollowing(username: String?) {
-        apiConfig.getApiService().getListFollowing(username!!)
-            .enqueue(object: Callback<List<ResponseFollowing>> {
-                override fun onResponse(
-                    call: Call<List<ResponseFollowing>>,
-                    response: Response<List<ResponseFollowing>>
-                ) {
-                    when (response.code()) {
-                        200 -> view._onSuccessFollowing(response.body())
-                        404 -> view._onFailedFollowing("Gagal Memuat Data Following")
-                        500 -> view._onFailedFollowing("Gagal Memuat Data Following")
-                        else -> view._onFailedFollowing("Gagal Memuat Data Following")
-                    }
-                }
-
-                override fun onFailure(call: Call<List<ResponseFollowing>>, t: Throwable) {
-                    view._onFailedFollowing("Pastikan Jaringan Anda Stabil")
-                }
-
-            })
-    }
-
- */
 }
