@@ -9,6 +9,18 @@ import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
 
 class GithubUserAdapter(private val listDetail: ArrayList<ResponseDetail>) :
     RecyclerView.Adapter<GithubUserAdapter.ViewHolder>() {
+
+    private lateinit var onItemClickCallback: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback){
+        this.onItemClickCallback = onItemClickCallback
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(data: ResponseDetail)
+    }
+
+
     class ViewHolder(var binding: ItemRowUserBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,6 +36,8 @@ class GithubUserAdapter(private val listDetail: ArrayList<ResponseDetail>) :
             .load(listDetail[position].avatarUrl)
             .circleCrop()
             .into(holder.binding.imgItemPhoto)
+
+        holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(listDetail[holder.adapterPosition]) }
     }
 
     override fun getItemCount(): Int = listDetail.size

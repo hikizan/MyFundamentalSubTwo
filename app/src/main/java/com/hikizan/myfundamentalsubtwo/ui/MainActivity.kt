@@ -2,6 +2,7 @@ package com.hikizan.myfundamentalsubtwo.ui
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -47,6 +48,12 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         binding.rvGithubUser.layoutManager = LinearLayoutManager(this)
         binding.rvGithubUser.adapter = adapter
         adapter.notifyDataSetChanged()
+        adapter.setOnItemClickCallback(object:
+            GithubUserAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: ResponseDetail) {
+                showSelectedGithubUser(data)
+            }
+        })
 
         presenterUsers.getListUser()
 
@@ -65,6 +72,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
             override fun onQueryTextSubmit(query: String): Boolean {
                 //mencari list user github
                 if (query.isNotEmpty()){
+                    showLoading(true)
                     listDetail.clear()
                     presenterUsers.getSearch(query)
                 }
@@ -79,6 +87,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
     }
 
     private fun initPresenter() {
+        showLoading(true)
         presenterUsers = UsersPresenter(this)
     }
 
@@ -98,6 +107,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         for (user in usersResponse!!) {
             getReqDetail(user!!.login)
         }
+        showLoading(false)
     }
 
     override fun _onFailed(message: String?) {
@@ -116,6 +126,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
     }
 
     override fun _onSuccessSearch(searchResponse: ResponseSearch?) {
+        showLoading(false)
         for (item in searchResponse!!.items){
             getReqDetail(item.login)
         }
@@ -124,4 +135,11 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
     override fun _onFailedSearch(message: String?) {
         Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
     }
+
+    private fun showSelectedGithubUser(data: ResponseDetail){
+        val moveWithDataParcel = Intent(this@MainActivity, DetailActivity::class.java)
+        moveWithDataParcel.putExtra(DetailActivity.EXTRA_DATA, data)
+        startActivity(moveWithDataParcel)
+    }
+
 }
