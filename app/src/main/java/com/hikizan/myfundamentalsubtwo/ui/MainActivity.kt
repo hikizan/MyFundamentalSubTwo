@@ -16,10 +16,13 @@ import com.hikizan.myfundamentalsubtwo.adapter.GithubUserAdapter
 import com.hikizan.myfundamentalsubtwo.contract.UsersContract
 import com.hikizan.myfundamentalsubtwo.databinding.ActivityMainBinding
 import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
+import com.hikizan.myfundamentalsubtwo.model.followers.ResponseFollowers
+import com.hikizan.myfundamentalsubtwo.model.following.ResponseFollowing
 import com.hikizan.myfundamentalsubtwo.model.search.ResponseSearch
 import com.hikizan.myfundamentalsubtwo.model.users.ResponseUsers
 import com.hikizan.myfundamentalsubtwo.presenter.UsersPresenter
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), UsersContract.usersView {
 
@@ -27,6 +30,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
     private val listDetail: ArrayList<ResponseDetail> = ArrayList<ResponseDetail>()
     private var iSearch: SearchView? = null
     private lateinit var adapter: GithubUserAdapter
+    private val listFollowers: ArrayList<ResponseFollowers> = ArrayList<ResponseFollowers>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -93,6 +97,10 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         presenterUsers.getDetailUser(login)
     }
 
+    private fun getFollUser(login: String){
+        presenterUsers.getFollowers(login)
+    }
+
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
             binding.pbMain.visibility = View.VISIBLE
@@ -101,7 +109,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         }
     }
 
-    override fun _onSuccess(usersResponse: List<ResponseUsers?>?) {
+    override fun _onSuccess(usersResponse: List<ResponseUsers>?) {
         for (user in usersResponse!!) {
             getReqDetail(user!!.login)
         }
@@ -121,8 +129,9 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         adapter.notifyDataSetChanged()
         adapter.setOnItemClickCallback(object :
             GithubUserAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: ResponseDetail) {
+            override fun onItemClicked(data: ResponseDetail) { //masukkan data list following dan followers disini
                 showSelectedGithubUser(data)
+
             }
         })
     }
@@ -142,7 +151,28 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
     }
 
+    override fun _onSuccessFollowing(followingResponse: List<ResponseFollowing>?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun _onFailedFollowing(message: String?) {
+        Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun _onSuccessFollowers(followersResponse: List<ResponseFollowers>?) {
+        for (follower in followersResponse!!){
+            listFollowers.add(follower)
+        }
+    }
+
+    override fun _onFailedFollowers(message: String?) {
+        TODO("Not yet implemented")
+    }
+
     private fun showSelectedGithubUser(data: ResponseDetail) {
+        if (listFollowers == null){
+            getFollUser(data.login!!)
+        }
         val moveWithDataParcel = Intent(this@MainActivity, DetailActivity::class.java)
         moveWithDataParcel.putExtra(DetailActivity.EXTRA_DATA, data)
         startActivity(moveWithDataParcel)

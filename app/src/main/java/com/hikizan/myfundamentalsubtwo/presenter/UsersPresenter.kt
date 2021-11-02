@@ -3,6 +3,8 @@ package com.hikizan.myfundamentalsubtwo.presenter
 import com.hikizan.myfundamentalsubtwo.api.ApiConfig
 import com.hikizan.myfundamentalsubtwo.contract.UsersContract
 import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
+import com.hikizan.myfundamentalsubtwo.model.followers.ResponseFollowers
+import com.hikizan.myfundamentalsubtwo.model.following.ResponseFollowing
 import com.hikizan.myfundamentalsubtwo.model.search.ResponseSearch
 import com.hikizan.myfundamentalsubtwo.model.users.ResponseUsers
 import retrofit2.Call
@@ -79,6 +81,50 @@ class UsersPresenter : UsersContract.usersPresenter {
 
                 override fun onFailure(call: Call<ResponseSearch>, t: Throwable) {
                     view._onFailedSearch("Pastikan Jaringan Anda Stabil")
+                }
+
+            })
+    }
+
+    override fun getFollowing(username: String?) {
+        apiConfig.getApiService().getListFollowing(username!!)
+            .enqueue(object: Callback<List<ResponseFollowing>> {
+                override fun onResponse(
+                    call: Call<List<ResponseFollowing>>,
+                    response: Response<List<ResponseFollowing>>
+                ) {
+                    when (response.code()) {
+                        200 -> view._onSuccessFollowing(response.body())
+                        404 -> view._onFailedFollowing("Gagal Memuat Data Following")
+                        500 -> view._onFailedFollowing("Gagal Memuat Data Following")
+                        else -> view._onFailedFollowing("Gagal Memuat Data Following")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<ResponseFollowing>>, t: Throwable) {
+                    view._onFailedFollowing("Pastikan Jaringan Anda Stabil")
+                }
+
+            })
+    }
+
+    override fun getFollowers(username: String?) {
+        apiConfig.getApiService().getListFollowers(username!!)
+            .enqueue(object: Callback<List<ResponseFollowers>> {
+                override fun onResponse(
+                    call: Call<List<ResponseFollowers>>,
+                    response: Response<List<ResponseFollowers>>
+                ) {
+                    when (response.code()) {
+                        200 -> view._onSuccessFollowers(response.body())
+                        404 -> view._onFailedFollowers("Gagal Memuat Data Followers")
+                        500 -> view._onFailedFollowers("Gagal Memuat Data Followers")
+                        else -> view._onFailedFollowers("Gagal Memuat Data Followers")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<ResponseFollowers>>, t: Throwable) {
+                    view._onFailedFollowers("Pastikan Jaringan Anda Stabil")
                 }
 
             })

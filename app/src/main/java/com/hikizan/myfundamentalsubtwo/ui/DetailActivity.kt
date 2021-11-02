@@ -39,9 +39,9 @@ class DetailActivity : AppCompatActivity() {
 
         val responseDetail: ResponseDetail? = intent.getParcelableExtra(EXTRA_DATA)
         binding.apply {
-            tvItemName.text = responseDetail?.name ?: "unknown"
-            tvItemLocation.text = responseDetail?.location ?: "no data"
-            tvItemCompany.text = responseDetail?.company ?: "no data"
+            tvItemName.text = responseDetail?.name ?: "-"
+            tvItemLocation.text = responseDetail?.location ?: "="
+            tvItemCompany.text = responseDetail?.company ?: "-"
             tvItemRepository.text = responseDetail?.publicRepos.toString()
             tvItemFollowers.text = responseDetail?.followers.toString()
             tvItemFollowing.text = responseDetail?.following.toString()
