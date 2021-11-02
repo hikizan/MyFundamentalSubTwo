@@ -1,5 +1,6 @@
 package com.hikizan.myfundamentalsubtwo.ui
 
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -27,12 +28,9 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
     private var iSearch: SearchView? = null
     private lateinit var adapter: GithubUserAdapter
 
-    companion object{
-        private const val TAG = "MainActivity"
-    }
-
     private lateinit var binding: ActivityMainBinding
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,7 +46,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         binding.rvGithubUser.layoutManager = LinearLayoutManager(this)
         binding.rvGithubUser.adapter = adapter
         adapter.notifyDataSetChanged()
-        adapter.setOnItemClickCallback(object:
+        adapter.setOnItemClickCallback(object :
             GithubUserAdapter.OnItemClickCallback {
             override fun onItemClicked(data: ResponseDetail) {
                 showSelectedGithubUser(data)
@@ -71,7 +69,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 //mencari list user github
-                if (query.isNotEmpty()){
+                if (query.isNotEmpty()) {
                     showLoading(true)
                     listDetail.clear()
                     presenterUsers.getSearch(query)
@@ -95,10 +93,10 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         presenterUsers.getDetailUser(login)
     }
 
-    private fun showLoading(isLoading: Boolean){
-        if (isLoading){
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
             binding.pbMain.visibility = View.VISIBLE
-        }else{
+        } else {
             binding.pbMain.visibility = View.INVISIBLE
         }
     }
@@ -114,29 +112,37 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun _onSuccessDetail(detailResponse: ResponseDetail?) {
         listDetail.add(detailResponse!!)
         adapter = GithubUserAdapter(listDetail)
+        binding.rvGithubUser.layoutManager = LinearLayoutManager(this)
         binding.rvGithubUser.adapter = adapter
         adapter.notifyDataSetChanged()
+        adapter.setOnItemClickCallback(object :
+            GithubUserAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: ResponseDetail) {
+                showSelectedGithubUser(data)
+            }
+        })
     }
 
     override fun _onFailedDetail(message: String?) {
-        Toast.makeText(this, "Message: $message",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
     }
 
     override fun _onSuccessSearch(searchResponse: ResponseSearch?) {
-        showLoading(false)
-        for (item in searchResponse!!.items){
+        for (item in searchResponse!!.items) {
             getReqDetail(item.login)
         }
+        showLoading(false)
     }
 
     override fun _onFailedSearch(message: String?) {
         Toast.makeText(this, "Message: $message", Toast.LENGTH_SHORT).show()
     }
 
-    private fun showSelectedGithubUser(data: ResponseDetail){
+    private fun showSelectedGithubUser(data: ResponseDetail) {
         val moveWithDataParcel = Intent(this@MainActivity, DetailActivity::class.java)
         moveWithDataParcel.putExtra(DetailActivity.EXTRA_DATA, data)
         startActivity(moveWithDataParcel)

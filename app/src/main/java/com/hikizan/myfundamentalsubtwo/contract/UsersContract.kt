@@ -4,7 +4,7 @@ import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
 import com.hikizan.myfundamentalsubtwo.model.search.ResponseSearch
 import com.hikizan.myfundamentalsubtwo.model.users.ResponseUsers
 
-public interface UsersContract {
+interface UsersContract {
 
     interface usersView {
         fun _onSuccess(usersResponse: List<ResponseUsers?>?)
