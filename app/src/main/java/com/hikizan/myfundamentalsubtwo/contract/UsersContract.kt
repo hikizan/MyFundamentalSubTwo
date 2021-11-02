@@ -15,17 +15,29 @@ interface UsersContract {
         fun _onFailedDetail(message: String?)
         fun _onSuccessSearch(searchResponse: ResponseSearch?)
         fun _onFailedSearch(message: String?)
-        fun _onSuccessFollowing(followingResponse: List<ResponseFollowing>?)
-        fun _onFailedFollowing(message: String?)
-        fun _onSuccessFollowers(followersResponse: List<ResponseFollowers>?)
-        fun _onFailedFollowers(message: String?)
     }
 
     interface usersPresenter {
         fun getListUser()
         fun getDetailUser(username: String?)
         fun getSearch(username: String?)
+    }
+
+    interface followingView{
+        fun _onSuccessFollowing(followingResponse: List<ResponseFollowing>?)
+        fun _onFailedFollowing(message: String?)
+    }
+
+    interface followingPresenter {
         fun getFollowing(username: String?)
+    }
+
+    interface followersView{
+        fun _onSuccessFollowers(followersResponse: List<ResponseFollowers>?)
+        fun _onFailedFollowers(message: String?)
+    }
+
+    interface followersPresenter{
         fun getFollowers(username: String?)
     }
 
