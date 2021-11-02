@@ -85,7 +85,7 @@ class UsersPresenter : UsersContract.usersPresenter {
 
             })
     }
-
+/*
     override fun getFollowing(username: String?) {
         apiConfig.getApiService().getListFollowing(username!!)
             .enqueue(object: Callback<List<ResponseFollowing>> {
@@ -107,4 +107,6 @@ class UsersPresenter : UsersContract.usersPresenter {
 
             })
     }
+
+ */
 }

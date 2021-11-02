@@ -5,8 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.hikizan.myfundamentalsubtwo.adapter.GithubUserAdapter
 import com.hikizan.myfundamentalsubtwo.contract.UsersContract
 import com.hikizan.myfundamentalsubtwo.databinding.FragmentFollowersBinding
+import com.hikizan.myfundamentalsubtwo.model.detail.ResponseDetail
 import com.hikizan.myfundamentalsubtwo.model.followers.ResponseFollowers
 import com.hikizan.myfundamentalsubtwo.presenter.FollowersPresenter
 
@@ -14,11 +18,9 @@ class FollowersFragment : Fragment(), UsersContract.followersView {
 
     private lateinit var presenterFollowers: UsersContract.followersPresenter
     private lateinit var binding: FragmentFollowersBinding
-    private lateinit var responseFollowers: ResponseFollowers
+    private val listDetail: ArrayList<ResponseDetail> = ArrayList<ResponseDetail>()
+    private lateinit var adapter: GithubUserAdapter
 
-    companion object{
-        const val EXTRA_NAME = "extra_name"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,19 +36,39 @@ class FollowersFragment : Fragment(), UsersContract.followersView {
         super.onViewCreated(view, savedInstanceState)
         initPresenter()
 
-        //presenterFollowers.getFollowers()
+        val responseDetail: ResponseDetail? = requireActivity().intent.getParcelableExtra(DetailActivity.EXTRA_DATA)
+
+        presenterFollowers.getFollowers(responseDetail?.login)
     }
 
     private fun initPresenter(){
         presenterFollowers = FollowersPresenter(this)
     }
 
+    private fun getReqDetail(login: String){
+        presenterFollowers.getDetailUser(login)
+    }
+
+    override fun _onSuccessDetail(detailResponse: ResponseDetail?) {
+        listDetail.add(detailResponse!!)
+        adapter = GithubUserAdapter(listDetail)
+        binding.rvFollowers.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvFollowers.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun _onFailedDetail(message: String?) {
+        Toast.makeText(requireContext(), "Message: $message", Toast.LENGTH_SHORT).show()
+    }
+
     override fun _onSuccessFollowers(followersResponse: List<ResponseFollowers>?) {
-        TODO("Not yet implemented")
+        for (followers in followersResponse!!){
+            followers.login?.let { getReqDetail(it) }
+        }
     }
 
     override fun _onFailedFollowers(message: String?) {
-        TODO("Not yet implemented")
+        Toast.makeText(requireContext(), "Message: $message", Toast.LENGTH_SHORT).show()
     }
 
 }

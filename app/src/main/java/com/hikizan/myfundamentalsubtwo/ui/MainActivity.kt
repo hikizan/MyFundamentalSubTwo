@@ -126,7 +126,6 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
             GithubUserAdapter.OnItemClickCallback {
             override fun onItemClicked(data: ResponseDetail) { //masukkan data list following dan followers disini
                 showSelectedGithubUser(data)
-
             }
         })
     }
@@ -149,7 +148,7 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
     private fun showSelectedGithubUser(data: ResponseDetail) {
         val moveWithDataParcel = Intent(this@MainActivity, DetailActivity::class.java)
         moveWithDataParcel.putExtra(DetailActivity.EXTRA_DATA, data)
-        moveWithDataParcel.putExtra(FollowersFragment.EXTRA_NAME,data.login)
+
         startActivity(moveWithDataParcel)
     }
 

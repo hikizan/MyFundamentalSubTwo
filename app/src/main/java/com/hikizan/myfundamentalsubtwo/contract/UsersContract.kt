@@ -24,21 +24,27 @@ interface UsersContract {
     }
 
     interface followingView{
+        fun _onSuccessDetail(detailResponse: ResponseDetail?)
+        fun _onFailedDetail(message: String?)
         fun _onSuccessFollowing(followingResponse: List<ResponseFollowing>?)
         fun _onFailedFollowing(message: String?)
     }
 
     interface followingPresenter {
         fun getFollowing(username: String?)
+        fun getDetailUser(username: String?)
     }
 
     interface followersView{
+        fun _onSuccessDetail(detailResponse: ResponseDetail?)
+        fun _onFailedDetail(message: String?)
         fun _onSuccessFollowers(followersResponse: List<ResponseFollowers>?)
         fun _onFailedFollowers(message: String?)
     }
 
     interface followersPresenter{
         fun getFollowers(username: String?)
+        fun getDetailUser(username: String?)
     }
 
 
