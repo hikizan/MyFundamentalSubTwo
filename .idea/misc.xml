@@ -5,8 +5,10 @@
       <map>
         <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/drawable-v24/bottom_rounded.xml" value="0.12407407407407407" />
         <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/drawable-v24/ic_location.xml" value="0.25277777777777777" />
-        <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/layout/activity_detail.xml" value="0.2" />
+        <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/layout/activity_detail.xml" value="0.33" />
         <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/layout/activity_main.xml" value="0.353125" />
+        <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/layout/fragment_followers.xml" value="0.353125" />
+        <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/layout/fragment_following.xml" value="0.25" />
         <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/layout/item_row_user.xml" value="0.25" />
         <entry key="..\:/College/Semester7/SIB_DicodingXKampusMerdeka_(PengembangAplikasiAndroid)/project_program/AndroidFundamental/MyFundamentalSubTwo/app/src/main/res/menu/option_menu.xml" value="0.353125" />
       </map>

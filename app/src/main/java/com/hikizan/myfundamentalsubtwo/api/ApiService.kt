@@ -27,22 +27,20 @@ interface ApiService {
         @Path("username") username: String
     ): Call<ResponseDetail>
 
-
-    /*
-
+/*
     //follower
     @Headers("Authorization: token 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")
-    @GET("users/{login}/followers")
+    @GET("users/{username}/followers")
     fun getListFollowers(
-        @Path("login") login: String
+        @Path("username") username: String
     ): Call<ResponseFollowersUser>
 
     //following
     @Headers("Authorization: token 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")
-    @GET("users/{login}/following")
+    @GET("users/{username}/following")
     fun getListFollowing(
-        @Path("login") login: String
+        @Path("username") username: String
     ): Call<ResponseFollowingUser>
 
-     */
+ */
 }
