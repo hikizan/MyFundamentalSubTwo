@@ -45,18 +45,6 @@ class MainActivity : AppCompatActivity(), UsersContract.usersView {
         supportActionBar?.title = "List Github User"
 
         binding.rvGithubUser.setHasFixedSize(true)
-        /*
-        adapter = GithubUserAdapter(listDetail)
-        binding.rvGithubUser.layoutManager = LinearLayoutManager(this)
-        binding.rvGithubUser.adapter = adapter
-        adapter.notifyDataSetChanged()
-        adapter.setOnItemClickCallback(object :
-            GithubUserAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: ResponseDetail) {
-                showSelectedGithubUser(data)
-            }
-        })
-         */
 
         presenterUsers.getListUser()
 
